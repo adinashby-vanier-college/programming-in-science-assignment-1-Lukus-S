@@ -1,0 +1,80 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: testBuiltInFunctionsMax
+      id: testbuiltinfunctionsmax
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testBuiltInFunctionsMax
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_built_in_functions_max
+        timeout: 1
+        max-score: 10
+    - name: testBuiltInFunctionsMin
+      id: testbuiltinfunctionsmin
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testBuiltInFunctionsMin
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_built_in_functions_min
+        timeout: 1
+        max-score: 10
+    - name: testCheckNumber
+      id: testchecknumber
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testCheckNumber
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_check_number
+        timeout: 1
+        max-score: 20
+    - name: testStarShape
+      id: teststarshape
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testStarShape
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_star_shape
+        timeout: 1
+        max-score: 20
+    - name: testCountMultiplesOf3
+      id: testcountmultiplesof3
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testCountMultiplesOf3
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_count_multiples_of_3
+        timeout: 1
+        max-score: 20
+    - name: testSumOfEvenNumbers
+      id: testsumofevennumbers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testSumOfEvenNumbers
+        setup-command: pip install pytest
+        command: pytest test_assignment1.py::test_sum_of_even_numbers
+        timeout: 1
+        max-score: 20
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TESTBUILTINFUNCTIONSMAX_RESULTS: "${{steps.testbuiltinfunctionsmax.outputs.result}}"
+        TESTBUILTINFUNCTIONSMIN_RESULTS: "${{steps.testbuiltinfunctionsmin.outputs.result}}"
+        TESTCHECKNUMBER_RESULTS: "${{steps.testchecknumber.outputs.result}}"
+        TESTSTARSHAPE_RESULTS: "${{steps.teststarshape.outputs.result}}"
+        TESTCOUNTMULTIPLESOF3_RESULTS: "${{steps.testcountmultiplesof3.outputs.result}}"
+        TESTSUMOFEVENNUMBERS_RESULTS: "${{steps.testsumofevennumbers.outputs.result}}"
+      with:
+        runners: testbuiltinfunctionsmax,testbuiltinfunctionsmin,testchecknumber,teststarshape,testcountmultiplesof3,testsumofevennumbers
